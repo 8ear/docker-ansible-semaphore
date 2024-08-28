@@ -1,0 +1,5 @@
+*
+!docker-entrypoint.sh
+!Dockerfile
+!requirements.yml
+!config/*
