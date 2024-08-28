@@ -30,9 +30,6 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo \
 # Go back to unprivileged user
 USER 1001
 
-# # Add galaxies and roles
-COPY requirements.yml /home/semaphore/requirements.yml
-
 # Add Ansible custom config
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
 
