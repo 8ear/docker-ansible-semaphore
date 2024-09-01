@@ -37,6 +37,12 @@ services:
   expose:
     - 3000
 ````
+## Azure CLI `az`
+To use az extensions, they must be enabled first:
+Show az extensions: `az extension list-available --output table`
+Enable az extension: `az extension add --name subscription`
+````
+
 
 ## Credits
 This was not possible without the the people from Ansible Semaphore!
