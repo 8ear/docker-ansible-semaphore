@@ -3,3 +3,4 @@
 !Dockerfile
 !requirements.yml
 !config/*
+!play_ci_test_localhost.yml
