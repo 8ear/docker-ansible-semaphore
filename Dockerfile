@@ -1,5 +1,5 @@
 # https://github.com/semaphoreui/semaphore/blob/develop/deployment/docker/server/Dockerfile
-ARG SEMAPHORE_VERSION=v2.10.21
+ARG SEMAPHORE_VERSION=v2.10.22
 FROM semaphoreui/semaphore:$SEMAPHORE_VERSION
 
 # WORKDIR /home/semaphore
@@ -13,7 +13,12 @@ USER root
 # heimdal-dev python3-dev build-base openssl-dev libffi-dev cargo \
 RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo \
     ; source ${VIRTUAL_ENV}/bin/activate \  
+    ;pip3 install --upgrade pip \
+    ;pip3 install ansible-lint \
     ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
+    # Install Azure CLI
+    # https://github.com/Azure/azure-cli/issues/19591
+    ;pip3 install azure-cli \
     # ;pip3 install --upgrade \
     #     ansible-lint \
     #     # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
@@ -32,6 +37,7 @@ USER 1001
 
 # Add Ansible custom config
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
+COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
 
 # # Preventing ansible zombie processes. Tini kills zombies.
 # ENTRYPOINT ["/sbin/tini", "--"]
