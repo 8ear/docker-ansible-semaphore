@@ -8,3 +8,4 @@ container_bash:
 
 container_test: 
 	docker run -ti --rm ghcr.io/8ear/docker-ansible-semaphore ansible-playbook play_ci_test_localhost.yml
+	docker run -ti --rm ghcr.io/8ear/docker-ansible-semaphore ansible-lint play_ci_test_localhost.yml
