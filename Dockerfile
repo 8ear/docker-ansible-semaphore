@@ -14,20 +14,18 @@ USER root
 RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo \
     ; source ${VIRTUAL_ENV}/bin/activate \  
     ;pip3 install --upgrade pip \
-    ;pip3 install ansible-lint \
     ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
     # Install Azure CLI
     # https://github.com/Azure/azure-cli/issues/19591
     ;pip3 install azure-cli \
-    # ;pip3 install --upgrade \
-    #     ansible-lint \
-    #     # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
-    #     dnspython \
-    #     #pyspnego>=0.8.0
-    #     pyspnego \
-    #     pyspnego[kerberos] \
-    #     sansldap \
-    #     dpapi-ng \
+       ansible-lint \
+       # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
+       dnspython \
+       #pyspnego>=0.8.0
+       pyspnego \
+       pyspnego[kerberos] \
+       sansldap \
+       dpapi-ng \
     ; chown -R semaphore:0 /opt/semaphore /home/semaphore \
     ; apk del python3-dev build-base openssl-dev libffi-dev cargo \
     ; rm -rf /var/cache/apk/*
@@ -38,6 +36,8 @@ USER 1001
 # Add Ansible custom config
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
 COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
+
+ENV TINI_SUBREAPER=true
 
 # # Preventing ansible zombie processes. Tini kills zombies.
 # ENTRYPOINT ["/sbin/tini", "--"]
