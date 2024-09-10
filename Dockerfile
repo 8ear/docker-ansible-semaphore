@@ -21,6 +21,8 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
        dnspython \
+       # to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
+       libkrb5-dev \
        #pyspnego>=0.8.0
        pyspnego \
        pyspnego[kerberos] \
