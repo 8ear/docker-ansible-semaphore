@@ -28,8 +28,9 @@ EOF
 
 
 # Install requirements file if exists in ~/requirements.yml
-echo "Check if additional galaxies must be installed from ~/requirements.yml"
+echo "Check if additional galaxies must be installed from ~/requirements.yml or ~/ansible/requirements.yml"
 [ -f ~/requirements.yml ] && ansible-galaxy install -r ~/requirements.yml
+[ -f ~/ansible/requirements.yml ] && ansible-galaxy install -r ~/ansible/requirements.yml
 
 # Start the following command:
 echo "#####" # empty line
