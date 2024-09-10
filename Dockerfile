@@ -18,7 +18,8 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo kr
     ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
     # Install Azure CLI
     # https://github.com/Azure/azure-cli/issues/19591
-    ;pip3 install azure-cli \
+    ;pip3 install  \
+       azure-cli \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
        dnspython \
@@ -28,7 +29,7 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo kr
        sansldap \
        dpapi-ng \
     ; chown -R semaphore:0 /opt/semaphore /home/semaphore \
-    ; apk del python3-dev build-base openssl-dev libffi-dev cargo \
+    ; apk del python3-dev build-base openssl-dev libffi-dev cargo krb5-dev \
     ; rm -rf /var/cache/apk/*
 
 # Go back to unprivileged user
