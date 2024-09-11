@@ -11,7 +11,7 @@ USER root
 
 # Add system packages
 # heimdal-dev python3-dev build-base openssl-dev libffi-dev cargo \
-RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo krb5-dev \
+RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo krb5-dev krb5 \
     # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
     ; source ${VIRTUAL_ENV}/bin/activate \  
     ;pip3 install --upgrade pip \
