@@ -11,14 +11,16 @@ USER root
 
 # Add system packages
 # heimdal-dev python3-dev build-base openssl-dev libffi-dev cargo \
-RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo krb5-dev krb5 \
+RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev libffi-dev cargo \
     # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
-    ; source ${VIRTUAL_ENV}/bin/activate \  
-    ;pip3 install --upgrade pip \
-    ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
-    # Install Azure CLI
-    # https://github.com/Azure/azure-cli/issues/19591
-    ;pip3 install  \
+    ;apk add --no-cache -U krb5-dev \
+    ;source ${VIRTUAL_ENV}/bin/activate \  
+    ;apk upgrade --no-cache \
+    ;pip3 pip3 install --upgrade pip ansible requests \
+    ;pip3 install --no-cache-dir --prefer-binary \
+    #;pip3 install \
+       # Install Azure CLI
+       # https://github.com/Azure/azure-cli/issues/19591
        azure-cli \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
@@ -28,8 +30,12 @@ RUN apk add --no-cache -U python3-dev build-base openssl-dev libffi-dev cargo kr
        pyspnego[kerberos] \
        sansldap \
        dpapi-ng \
-    ; chown -R semaphore:0 /opt/semaphore /home/semaphore \
-    ; apk del python3-dev build-base openssl-dev libffi-dev cargo krb5-dev \
+    ; ansible-galaxy collection install azure.azcollection --force \
+    ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
+    #; mkdir /etc/krb5.d \
+    #; echo "includedir /etc/krb5.d" >> /etc/krb5.conf \
+    #; chown -R semaphore:0 /opt/semaphore /home/semaphore /etc/krb5.d \
+    ; apk del python3-dev build-base openssl-dev libffi-dev cargo \
     ; rm -rf /var/cache/apk/*
 
 # Go back to unprivileged user
@@ -39,6 +45,7 @@ USER 1001
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
 COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
 
+# To suppress info from tini that it do not run as id=0
 ENV TINI_SUBREAPER=true
 
 # # Preventing ansible zombie processes. Tini kills zombies.
