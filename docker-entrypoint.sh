@@ -10,10 +10,10 @@ AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
 AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
 AZURE_TENANT_ID=${AZURE_TENANT_ID}
 # Add variables for Azure as secret -> secrets are more preferred
-[ -f /run/secrets/AZURE_SUBSCRIPTION_ID ] && export AZURE_SUBSCRIPTION_ID=${cat /run/secrets/AZURE_SUBSCRIPTION_ID}
-[ -f /run/secrets/AZURE_CLIENT_ID ] && export AZURE_CLIENT_ID=${cat /run/secrets/AZURE_CLIENT_ID}
-[ -f /run/secrets/AZURE_CLIENT_SECRET ] && export AZURE_CLIENT_SECRET=${cat /run/secrets/AZURE_CLIENT_SECRET}
-[ -f /run/secrets/AZURE_TENANT_ID ] && export AZURE_TENANT_ID=${cat /run/secrets/AZURE_TENANT_ID}
+[ -f /run/secrets/AZURE_SUBSCRIPTION_ID ] && export AZURE_SUBSCRIPTION_ID=$(cat /run/secrets/AZURE_SUBSCRIPTION_ID) && echo "Found AZURE_SUBSCRIPTION_ID secret."
+[ -f /run/secrets/AZURE_CLIENT_ID ] && export AZURE_CLIENT_ID=$(cat /run/secrets/AZURE_CLIENT_ID) && echo "Found AZURE_CLIENT_ID secret."
+[ -f /run/secrets/AZURE_CLIENT_SECRET ] && export AZURE_CLIENT_SECRET=$(cat /run/secrets/AZURE_CLIENT_SECRET) && echo "Found AZURE_CLIENT_SECRET secret."
+[ -f /run/secrets/AZURE_TENANT_ID ] && export AZURE_TENANT_ID=$(cat /run/secrets/AZURE_TENANT_ID) && echo "Found AZURE_TENANT_ID secret."
 
 # For Ansible AzureRM Inventory:
 # https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html#notes
@@ -21,6 +21,13 @@ AZURE_TENANT_ID=${AZURE_TENANT_ID}
 # AZURE_CLIENT_ID
 export AZURE_SECRET=${AZURE_CLIENT_SECRET}
 export AZURE_TENANT=${AZURE_TENANT_ID}
+
+# Check if az extensions must be installed:
+for i in ${AZURE_CLI_EXTENSIONS_TO_ENABLE}
+do
+    echo "Add az extension '$i' ..."
+    az extension add --name $i
+done
 
 # Check if i can login to azure cli
 if [ -n "${AZURE_CLIENT_ID}"  ] && [ -n "${AZURE_CLIENT_SECRET}"  ] && [ -n "${AZURE_TENANT_ID}"  ] 
