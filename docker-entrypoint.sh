@@ -34,8 +34,8 @@ if [ -n "${AZURE_CLIENT_ID}"  ] && [ -n "${AZURE_CLIENT_SECRET}"  ] && [ -n "${A
 then
     echo
     echo "Login to Azure CLI..."
-    az login --service-principal --username ${AZURE_CLIENT_ID} --password ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID}
-    az account get-access-token
+    # https://stackoverflow.com/questions/55457349/service-principal-az-cli-login-failing-no-subscriptions-found
+    az login --service-principal --username ${AZURE_CLIENT_ID} --password ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID} --verbose --allow-no-subscriptions
     echo
 else
     echo
