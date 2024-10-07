@@ -48,8 +48,6 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
         # Install Azure CLI
        # https://github.com/Azure/azure-cli/issues/19591
        azure-cli \
-    # Install biceps
-    ; az bicep install
     ; apk del build \
     ; rm -rf /var/cache/apk/*
 
