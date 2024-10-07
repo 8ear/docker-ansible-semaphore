@@ -47,6 +47,8 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
         # Install Azure CLI
        # https://github.com/Azure/azure-cli/issues/19591
        azure-cli \
+    # Install biceps
+    ; az bicep install
     ; apk del build \
     ; rm -rf /var/cache/apk/*
 
@@ -60,8 +62,8 @@ COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
 # To suppress info from tini that it do not run as id=0
 ENV TINI_SUBREAPER=true
 
-# Add additional python venv
-ENV PATH="$ANSIBLE_VENV_PATH/bin:$AZURE_CLI_VENV_PATH/bin:$PATH"
+# Add additional python venv + user azure bin folder for azure CLI installations
+ENV PATH="$ANSIBLE_VENV_PATH/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$PATH"
 
 # # Preventing ansible zombie processes. Tini kills zombies.
 # ENTRYPOINT ["/sbin/tini", "--"]
