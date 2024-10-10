@@ -17,7 +17,8 @@ ENV AZURE_CLI_VENV_PATH="/opt/azure-cli/venv"
 # https://stackoverflow.com/questions/47699304/how-to-create-a-dind-docker-image-with-azure-cli-on-alpine-linux
 RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev libffi-dev cargo \
     # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
-    ;apk add --no-cache -U krb5-dev \
+    # https://github.com/dotnet/dotnet-docker/issues/3844#issuecomment-1156181785
+    ;apk add --no-cache -U krb5-dev icu powershell \
     ;source ${VIRTUAL_ENV}/bin/activate \  
     ;apk upgrade --no-cache \
     ;pip3 pip3 install --upgrade pip ansible requests \
@@ -60,8 +61,8 @@ COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
 # To suppress info from tini that it do not run as id=0
 ENV TINI_SUBREAPER=true
 
-# Add additional python venv
-ENV PATH="$ANSIBLE_VENV_PATH/bin:$AZURE_CLI_VENV_PATH/bin:$PATH"
+# Add additional python venv + user azure bin folder for azure CLI installations
+ENV PATH="$ANSIBLE_VENV_PATH/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$PATH"
 
 # # Preventing ansible zombie processes. Tini kills zombies.
 # ENTRYPOINT ["/sbin/tini", "--"]

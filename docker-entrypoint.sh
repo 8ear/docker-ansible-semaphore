@@ -29,6 +29,10 @@ do
     az extension add --name $i
 done
 
+# Upgrade BICEP and Azure CLI
+echo "Upgrade and install Azure bicep..." && az bicep upgrade
+echo "Upgrade Azure CLI..." && az upgrade
+
 # Check if i can login to azure cli
 if [ -n "${AZURE_CLIENT_ID}"  ] && [ -n "${AZURE_CLIENT_SECRET}"  ] && [ -n "${AZURE_TENANT_ID}"  ] 
 then
