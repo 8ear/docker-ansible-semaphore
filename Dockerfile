@@ -62,7 +62,7 @@ COPY play_ci_test_localhost.yml /home/semaphore/play_ci_test_localhost.yml
 ENV TINI_SUBREAPER=true
 
 # Add additional python venv + user azure bin folder for azure CLI installations
-ENV PATH="$ANSIBLE_VENV_PATH/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$PATH"
+ENV PATH="$VIRTUAL_ENV/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$PATH"
 
 # # Preventing ansible zombie processes. Tini kills zombies.
 # ENTRYPOINT ["/sbin/tini", "--"]
