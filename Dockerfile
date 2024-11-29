@@ -32,6 +32,8 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
        pyspnego[kerberos] \
        sansldap \
        dpapi-ng \
+       # https://stackoverflow.com/questions/72819370/install-ms-graph-python-module
+       msgraph-core \
     # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
     ;ansible-galaxy collection install azure.azcollection --force \
     ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
