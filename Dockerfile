@@ -1,5 +1,5 @@
 # https://github.com/semaphoreui/semaphore/blob/develop/deployment/docker/server/Dockerfile
-ARG SEMAPHORE_VERSION=v2.10.35
+ARG SEMAPHORE_VERSION=v2.11
 FROM semaphoreui/semaphore:$SEMAPHORE_VERSION
 
 # WORKDIR /home/semaphore
