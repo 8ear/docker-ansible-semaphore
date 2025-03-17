@@ -34,9 +34,9 @@ done
 
 # Upgrade BICEP and Azure CLI
 echo "#####" # empty line
-echo "Upgrade and install Azure bicep..." && az bicep upgrade
+[ "$AZURE_CLI_INSTALL_BICEP" == true ] && echo "Upgrade and install Azure bicep..." && az bicep upgrade
 echo "#####" # empty line
-echo "Upgrade Azure CLI..." && az upgrade
+[ "$AZURE_CLI_UPGRADE" == true ] && echo "Upgrade Azure CLI..." && az upgrade --yes
 echo "#####" # empty line
 
 # Check if i can login to azure cli
