@@ -1,5 +1,6 @@
+# https://semaphoreui.com/install/docker
 # https://github.com/semaphoreui/semaphore/blob/develop/deployment/docker/server/Dockerfile
-ARG SEMAPHORE_VERSION=v2.13.0-powershell7.5.0
+ARG SEMAPHORE_VERSION=v2.13.1-powershell7.5.0
 FROM semaphoreui/semaphore:$SEMAPHORE_VERSION
 
 # WORKDIR /home/semaphore
