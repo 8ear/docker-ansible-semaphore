@@ -1,6 +1,5 @@
-# https://semaphoreui.com/install/docker
 # https://github.com/semaphoreui/semaphore/blob/develop/deployment/docker/server/Dockerfile
-ARG SEMAPHORE_VERSION=v2.13.1-powershell7.5.0
+ARG SEMAPHORE_VERSION=v2.15.0-powershell7.5.0
 FROM semaphoreui/semaphore:$SEMAPHORE_VERSION
 
 # WORKDIR /home/semaphore
@@ -19,10 +18,10 @@ ENV AZURE_CLI_VENV_PATH="/opt/azure-cli/venv"
 RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev libffi-dev cargo \
     # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
     # https://github.com/dotnet/dotnet-docker/issues/3844#issuecomment-1156181785
-    ;apk add --no-cache -U krb5-dev icu make \
+    ;apk add --no-cache -U krb5-dev icu \
     ;source ${VIRTUAL_ENV}/bin/activate \  
     ;apk upgrade --no-cache \
-    ;pip3 pip3 install --upgrade pip ansible requests \
+    ;pip3 install --upgrade pip ansible requests \
     ;pip3 install --no-cache-dir --prefer-binary \
     #;pip3 install \
        ansible-lint \
@@ -33,6 +32,7 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
        pyspnego[kerberos] \
        sansldap \
        dpapi-ng \
+       pykerberos \
        # https://stackoverflow.com/questions/72819370/install-ms-graph-python-module
        msgraph-core \
     # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
