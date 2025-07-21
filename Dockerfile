@@ -21,7 +21,7 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
     ;apk add --no-cache -U krb5-dev icu \
     ;source ${VIRTUAL_ENV}/bin/activate \  
     ;apk upgrade --no-cache \
-    ;pip3 pip3 install --upgrade pip ansible requests \
+    ;pip3 install --upgrade pip ansible requests \
     ;pip3 install --no-cache-dir --prefer-binary \
     #;pip3 install \
        ansible-lint \
