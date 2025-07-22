@@ -15,16 +15,14 @@ ENV AZURE_CLI_VENV_PATH="/opt/azure-cli/venv"
 # Add system packages
 # heimdal-dev python3-dev build-base openssl-dev libffi-dev cargo \
 # https://stackoverflow.com/questions/47699304/how-to-create-a-dind-docker-image-with-azure-cli-on-alpine-linux
-# -U = Update
 RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev libffi-dev cargo \
-    # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
+    # add 'krb5-dev' to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
     # https://github.com/dotnet/dotnet-docker/issues/3844#issuecomment-1156181785
-    ;apk add --no-cache -U krb5 icu \
-    ;source ${VIRTUAL_ENV}/bin/activate \  
+    ;apk add --no-cache -U krb5 krb5-dev icu \
     ;apk upgrade --no-cache \
+    ;source ${VIRTUAL_ENV}/bin/activate \  
     ;pip3 install --upgrade pip ansible requests \
     ;pip3 install --no-cache-dir --prefer-binary \
-    #;pip3 install \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
        dnspython \
