@@ -35,8 +35,8 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
        # https://stackoverflow.com/questions/72819370/install-ms-graph-python-module
        msgraph-core \
     # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
-    ;ansible-galaxy collection install azure.azcollection --force \
-    ;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
+    #;ansible-galaxy collection install azure.azcollection --force \
+    #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
     #; mkdir /etc/krb5.d \
     #; echo "includedir /etc/krb5.d" >> /etc/krb5.conf \
     #; chown -R semaphore:0 /opt/semaphore /home/semaphore /etc/krb5.d \
