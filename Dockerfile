@@ -35,7 +35,8 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
        # https://stackoverflow.com/questions/72819370/install-ms-graph-python-module
        msgraph-core \
     # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
-    #;ansible-galaxy collection install azure.azcollection --force \
+    ;ansible-galaxy collection install azure.azcollection --force -p /home/semaphore/.ansible/collections/ansible_collections \
+    ;pip3 install -r /home/semaphore/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
     #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
     #; mkdir /etc/krb5.d \
     #; echo "includedir /etc/krb5.d" >> /etc/krb5.conf \
@@ -56,11 +57,11 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
 # Go back to unprivileged user
 USER 1001
 
-RUN source ${VIRTUAL_ENV}/bin/activate \  
-    # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
-    ;ansible-galaxy collection install azure.azcollection --force \
-    #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements.txt \
-    ;pip3 install -r ${HOME}/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+#RUN source ${VIRTUAL_ENV}/bin/activate \  
+#    # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
+#    ;ansible-galaxy collection install azure.azcollection --force \
+#    #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements.txt \
+#    ;pip3 install -r ${HOME}/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
 
 # Add Ansible custom config
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
