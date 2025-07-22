@@ -21,7 +21,7 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
     ;apk add --no-cache -U krb5 krb5-dev icu \
     ;apk upgrade --no-cache \
     ;source ${VIRTUAL_ENV}/bin/activate \  
-    ;pip3 install --upgrade pip ansible requests \
+    #;pip3 install --upgrade pip ansible requests \
     ;pip3 install --no-cache-dir --prefer-binary \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
