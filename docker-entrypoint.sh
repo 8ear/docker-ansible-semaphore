@@ -1,22 +1,45 @@
 #!/bin/sh
 set -e
 
+file_env() {
+        # Function checks if VAR is directly exported or as VAR_FILE which means that a file will be read via 'cat'
+        # source: https://github.com/semaphoreui/semaphore/pull/1056/files
+        local var=""
+        local fileVar=""
+        eval var="\$${1}"
+        eval fileVar="\$${1}_FILE"
+        local def="${2:-}"
+        if [ -n "${var:-}" ] && [ -n "${fileVar:-}" ]; then
+                echo >&2 "error: both ${1} and ${1}_FILE are set (but are exclusive)"
+                exit 1
+        fi
+        local val="$def"
+        if [ -n "${var:-}" ]; then
+                val="${var}"
+                echo "Set '$var'..."
+        elif [ -n "${fileVar:-}" ]; then
+                val="$(cat "${fileVar}")"
+                echo "Set '$fileVar'..."
+        fi
+        export "${1}"="$val"
+        unset "${1}_FILE"
+}
+
 echo "#####" # empty line
 echo "Start Entrypoint ..."
-
-echo "Add variables for Azure..."
+echo "#####" # empty line
+echo "Export Variables for Ansible..."
 # Add variables for Azure cli as ENV
-AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
-AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
-AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
-AZURE_TENANT_ID=${AZURE_TENANT_ID}
-# Add variables for Azure as secret -> secrets are more preferred
-[ -f /run/secrets/AZURE_SUBSCRIPTION_ID ] && export AZURE_SUBSCRIPTION_ID=$(cat /run/secrets/AZURE_SUBSCRIPTION_ID) && echo "Found AZURE_SUBSCRIPTION_ID secret."
-[ -f /run/secrets/AZURE_CLIENT_ID ] && export AZURE_CLIENT_ID=$(cat /run/secrets/AZURE_CLIENT_ID) && echo "Found AZURE_CLIENT_ID secret."
-[ -f /run/secrets/AZURE_CLIENT_SECRET ] && export AZURE_CLIENT_SECRET=$(cat /run/secrets/AZURE_CLIENT_SECRET) && echo "Found AZURE_CLIENT_SECRET secret."
-[ -f /run/secrets/AZURE_TENANT_ID ] && export AZURE_TENANT_ID=$(cat /run/secrets/AZURE_TENANT_ID) && echo "Found AZURE_TENANT_ID secret."
+file_env 'AZURE_SUBSCRIPTION_ID' ''
+file_env 'AZURE_CLIENT_ID' ''
+file_env 'AZURE_CLIENT_SECRET' ''
+file_env 'AZURE_TENANT_ID' ''
+file_env 'MICROSOFT_AD_LDAP_PASSWORD' ''
+file_env 'NETBOX_SECRET' ''
+file_env 'VMWARE_SECRET' ''
 
 # For Ansible AzureRM Inventory:
+
 # https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html#notes
 # AZURE_SUBSCRIPTION_ID
 # AZURE_CLIENT_ID
