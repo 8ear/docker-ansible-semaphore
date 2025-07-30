@@ -16,14 +16,13 @@ ENV AZURE_CLI_VENV_PATH="/opt/azure-cli/venv"
 # heimdal-dev python3-dev build-base openssl-dev libffi-dev cargo \
 # https://stackoverflow.com/questions/47699304/how-to-create-a-dind-docker-image-with-azure-cli-on-alpine-linux
 RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev libffi-dev cargo \
-    # add krb5-dev to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
+    # add 'krb5-dev' to fix https://stackoverflow.com/questions/74854623/gssapi-docker-installation-issue-bin-sh-1-krb5-config-not-found
     # https://github.com/dotnet/dotnet-docker/issues/3844#issuecomment-1156181785
-    ;apk add --no-cache -U krb5-dev icu \
-    ;source ${VIRTUAL_ENV}/bin/activate \  
+    ;apk add --no-cache -U krb5 krb5-dev icu \
     ;apk upgrade --no-cache \
-    ;pip3 install --upgrade pip ansible requests \
+    ;source ${VIRTUAL_ENV}/bin/activate \  
+    #;pip3 install --upgrade pip ansible requests \
     ;pip3 install --no-cache-dir --prefer-binary \
-    #;pip3 install \
        ansible-lint \
        # https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ldap_inventory.html#requirements
        dnspython \
@@ -36,8 +35,10 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
        # https://stackoverflow.com/questions/72819370/install-ms-graph-python-module
        msgraph-core \
     # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
-    ;ansible-galaxy collection install azure.azcollection --force \
-    ;pip3 install -r /opt/semaphore/apps/ansible/9.4.0/venv/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
+    ;ansible-galaxy collection install azure.azcollection --force -p /home/semaphore/.ansible/collections/ansible_collections \
+    ;pip3 install -r /home/semaphore/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt \
+    ;chown -R semaphore:0 /home/semaphore \
+    #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
     #; mkdir /etc/krb5.d \
     #; echo "includedir /etc/krb5.d" >> /etc/krb5.conf \
     #; chown -R semaphore:0 /opt/semaphore /home/semaphore /etc/krb5.d \
@@ -51,11 +52,18 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
         # Install Azure CLI
        # https://github.com/Azure/azure-cli/issues/19591
        azure-cli \
-    ; apk del build \
-    ; rm -rf /var/cache/apk/*
+    ;apk del build \
+    ;apk add --no-cache -U make \
+    ;rm -rf /var/cache/apk/*
 
 # Go back to unprivileged user
 USER 1001
+
+#RUN source ${VIRTUAL_ENV}/bin/activate \  
+#    # https://galaxy.ansible.com/ui/repo/published/azure/azcollection/docs/?extIdCarryOver=true&sc_cid=701f2000001OH6uAAG
+#    ;ansible-galaxy collection install azure.azcollection --force \
+#    #;pip3 install -r ${VIRTUAL_ENV}/lib/python3.11/site-packages/ansible_collections/azure/azcollection/requirements.txt \
+#    ;pip3 install -r ${HOME}/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
 
 # Add Ansible custom config
 COPY config/ansible.cfg /etc/ansible/ansible.cfg
@@ -73,3 +81,18 @@ ENV PATH="$VIRTUAL_ENV/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+# Set build metadata here so we don't invalidate the container image cache if we
+# change the values of these arguments
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+  org.opencontainers.image.revision=$BUILD_REVISION \
+  org.opencontainers.image.version=$BUILD_VERSION \
+  org.opencontainers.image.description="This is image is built on top of ansible semaphore OSS for the usage fo Rhomberg Bau."
+
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
