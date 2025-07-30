@@ -52,8 +52,9 @@ RUN apk add --no-cache -U --virtual=build python3-dev build-base openssl-dev lib
         # Install Azure CLI
        # https://github.com/Azure/azure-cli/issues/19591
        azure-cli \
-    ; apk del build \
-    ; rm -rf /var/cache/apk/*
+    ;apk del build \
+    ;apk add --no-cache -U make \
+    ;rm -rf /var/cache/apk/*
 
 # Go back to unprivileged user
 USER 1001
@@ -80,3 +81,18 @@ ENV PATH="$VIRTUAL_ENV/bin:$AZURE_CLI_VENV_PATH/bin:/home/semaphore/.azure/bin:$
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+# Set build metadata here so we don't invalidate the container image cache if we
+# change the values of these arguments
+ARG BUILD_DATE
+ARG BUILD_REVISION
+ARG BUILD_VERSION
+
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+  org.opencontainers.image.revision=$BUILD_REVISION \
+  org.opencontainers.image.version=$BUILD_VERSION \
+  org.opencontainers.image.description="This is image is built on top of ansible semaphore OSS for the usage fo Rhomberg Bau."
+
+ENV BUILD_DATE=$BUILD_DATE
+ENV BUILD_REVISION=$BUILD_REVISION
+ENV BUILD_VERSION=$BUILD_VERSION
